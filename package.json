@@ -1,0 +1,28 @@
+{
+  "name": "final-minimal-fullstack-koa-react-ssr",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Minimal Koa + React SSR (Vite client bundle) with pnpm",
+  "scripts": {
+    "build": "vite build -c client/vite.config.mjs",
+    "dev": "kill-port 3000 || true && concurrently -k -n build,server -c cyan,green \"vite build -c client/vite.config.mjs -w\" \"nodemon --watch server --ext js,json server/index.js\""
+  },
+  "dependencies": {
+    "koa": "^2.15.3",
+    "koa-router": "^12.0.0",
+    "koa-static": "^5.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "xss": "^1.0.15"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1",
+    "kill-port": "^2.0.1",
+    "nodemon": "^3.1.7",
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
