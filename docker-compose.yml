@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  app:
+    image: ${IMAGE}:${TAG}
+    container_name: my_ssr_app
+    restart: always
+    networks: [appnet]
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: nginx_proxy
+    restart: always
+    depends_on: [app]
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot
+    networks: [appnet]
+
+networks:
+  appnet: {}
