@@ -15,7 +15,7 @@ app.use(serve(staticDir, { defer: false, maxage: 0 }));
 
 // health and minimal api
 router.get('/api/hello', async (ctx) => {
-  ctx.body = { message: 'hello api' };
+  ctx.body = { message: 'hello api1111111' };
 });
 
 // SSR route as requested
