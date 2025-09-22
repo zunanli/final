@@ -9,9 +9,10 @@ export default defineConfig({
   build: {
     outDir: path.resolve(process.cwd(), 'build/client'),
     emptyOutDir: false,
+    manifest: true,
     rollupOptions: {
       input: {
-        'pages/index/main': path.resolve(process.cwd(), 'client/src/pages/index/main.jsx'),
+        'clientsrc/pages/index/main.jsx': path.resolve(process.cwd(), 'client/src/pages/index/main.jsx'),
       },
       output: {
         entryFileNames: (chunk) => {

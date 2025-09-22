@@ -4,8 +4,10 @@
   "private": true,
   "description": "Minimal Koa + React SSR (Vite client bundle) with pnpm",
   "scripts": {
-    "build": "vite build -c client/vite.config.mjs",
-    "dev": "kill-port 3000 || true && concurrently -k -n build,server -c cyan,green \"vite build -c client/vite.config.mjs -w\" \"nodemon --watch server --ext js,json server/index.js\""
+    "build:client": "vite build -c client/vite.config.mjs",
+    "build:ssr": "vite build -c server/vite.ssr.config.mjs",
+    "build": "pnpm run build:client && pnpm run build:ssr",
+    "dev": "kill-port 3000 || true && concurrently -k -n client,ssr,server -c cyan,magenta,green \"vite build -c client/vite.config.mjs -w\" \"vite build -c server/vite.ssr.config.mjs -w\" \"nodemon --watch server --ext js,jsx,json server/index.js\""
   },
   "dependencies": {
     "koa": "^2.15.3",
