@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import '../../../style.css'
+import { Button } from "@/components/ui/button"
 
 function App() {
   const [msg, setMsg] = useState('');
@@ -15,6 +17,7 @@ function App() {
     <div>
       <p>Client script loaded.</p>
       <p>/api/hello: {msg}</p>
+      <Button>DDDDDDEPLOY</Button>
     </div>
   );
 }
