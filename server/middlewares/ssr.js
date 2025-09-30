@@ -1,13 +1,14 @@
 const path = require('path');
+const fs = require('fs');
 const React = require('react');
 const { renderToString } = require('react-dom/server');
 const xss = require('xss');
 
-// Minimal placeholders for optional version logic & logging to keep middleware robust
-let versionConfig = null;
-const mainJsRegex = /main\.js/g;
-async function getVersionConfig() {
-  versionConfig = {};
+// 读取 manifest.json
+const manifestPath = path.join(process.cwd(), 'build/client/.vite', 'manifest.json');
+let manifest = {};
+if (fs.existsSync(manifestPath)) {
+  manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
 }
 const LogHelper = {
   fatalError: (e) => {
@@ -51,23 +52,38 @@ module.exports = (app) => {
 
     try {
       const finalViewPath = path.join(process.cwd(), 'build/server/views', `${ssrTemplatePath}.js`);
-      // eslint-disable-next-line import/no-dynamic-require, global-require
       const Component = require(finalViewPath)?.default;
       ctx.type = 'text/html';
 
       if (typeof Component !== 'string' && ctx.url !== '/favicon.ico') {
-        let page = await renderToString(
+     
+        let pageHtml = await renderToString(
           React.createElement(Component, { data: safeMergedContext, params: safeParams }, null),
         );
-        const appVersion = model?.appVersion || safeParams.app_version;
-        if (process.env.RB_USERID && appVersion) {
-          if (!versionConfig) {
-            await getVersionConfig();
+
+        // 从 manifest 中获取客户端入口文件的正确路径
+        const entryName = 'src/pages/index/main.jsx';
+        const clientEntry = manifest[entryName];
+
+        if (clientEntry) {
+          const scriptTag = `<script type="module" src="/${clientEntry.file}"></script>`;
+          // 替换 HTML 中的占位符
+          pageHtml = pageHtml.replace(
+            '<script type="module" src="@clientsrc/pages/index/main.jsx"></script>',
+            scriptTag
+          );
+          console.log(manifest)
+
+          // 如果有 CSS 文件，也一并注入
+          if (clientEntry.css) {
+            clientEntry.css.forEach(cssFile => {
+              const cssTag = `<link rel="stylesheet" href="/${cssFile}">`;
+              pageHtml = pageHtml.replace('</head>', `${cssTag}</head>`);
+            });
           }
-          const mainJs = versionConfig[appVersion];
-          page = page.replace(mainJsRegex, mainJs).replace(/\\x3C/g, '<').replace(/\\x3E/g, '>');
         }
-        ctx.body = `<!DOCTYPE html>${page}`;
+
+        ctx.body = `<!DOCTYPE html>${pageHtml}`;
       } else {
         ctx.body = Component;
       }

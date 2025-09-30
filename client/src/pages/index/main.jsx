@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import '../../../style.css'
+import '../../../style.css';
 import { Button } from "@/components/ui/button"
 
 function App() {
