@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import '../../../style.css';
 import { Button } from "@/components/ui/button"
+import { ThemeProvider } from "@/components/theme-provider"
+import { useTheme } from "next-themes"
 
 function App() {
   const [msg, setMsg] = useState('');
+  const { setTheme } = useTheme()
 
   useEffect(() => {
     fetch('/api/hello')
@@ -18,6 +21,8 @@ function App() {
       <p>Client script loaded.</p>
       <p>/api/hello: {msg}</p>
       <Button>DDDDDDEPLOY</Button>
+      <Button onClick={() => setTheme("light")}>Light</Button>
+      <Button onClick={() => setTheme("dark")}>Dark</Button>
     </div>
   );
 }
@@ -25,7 +30,14 @@ function App() {
 const container = document.getElementById('root');
 if (container) {
   const root = createRoot(container);
-  root.render(<App />);
+  root.render(
+    <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+    >
+      <App />
+    </ThemeProvider>
+  );
 }
-
-
