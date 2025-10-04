@@ -1,15 +1,15 @@
 import React, {  useState, useRef } from 'react';
 import { useTheme } from "next-themes"
 
-type ListProps = {
+type ListProps<T> = {
   height: number;
   width: number;
-  itemCount: number;
   itemSize: number;
-  children: (props: { index: number }) => React.ReactNode;
+  data: T[];
+  children: (props: { index: number; item: T }) => React.ReactNode;
 }
 
-export default function List({ height, width, itemCount, itemSize, children: Row }: ListProps) {
+export default function List<T>({ height, width, data, itemSize, children: Row }: ListProps<T>) {
   const [scrollTop, setScrollTop] = useState(0);
   const containerRef = useRef(null);
   const { theme } = useTheme();
@@ -18,31 +18,13 @@ export default function List({ height, width, itemCount, itemSize, children: Row
   // 计算可见区域
   const visibleCount = Math.ceil(height / itemSize);
   const startIndex = Math.floor(scrollTop / itemSize);
-  const endIndex = Math.min(startIndex + visibleCount + 1, itemCount);
+  const endIndex = Math.min(startIndex + visibleCount + 1, data.length);
 
   // 处理滚动事件
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     setScrollTop(e.currentTarget.scrollTop);
   };
 
-  // 生成可见项
-  const visibleItems = [];
-  for (let i = startIndex; i < endIndex; i++) {
-    visibleItems.push(
-      <div
-        key={i}
-        style={{
-          position: 'absolute',
-          top: i * itemSize,
-          left: 0,
-          right: 0,
-          height: itemSize,
-        }}
-      >
-        <Row index={i} />
-      </div>
-    );
-  }
 
   return (
     <div
@@ -59,11 +41,27 @@ export default function List({ height, width, itemCount, itemSize, children: Row
     >
       <div
         style={{
-          height: itemCount * itemSize,
+          height: data.length * itemSize,
           position: 'relative',
         }}
       >
-        {visibleItems}
+        {data.slice(startIndex, endIndex).map((item, index) => {
+    const itemIndex = startIndex + index;
+    return (
+      <div
+        key={itemIndex}
+        style={{
+          position: 'absolute',
+          top: itemIndex * itemSize,
+          left: 0,
+          right: 0,
+          height: itemSize,
+        }}
+      >
+        <Row index={itemIndex} item={item} />
+      </div>
+    );
+  })}
       </div>
     </div>
   );

@@ -34,7 +34,6 @@ function App() {
   const [msg, setMsg] = useState('');
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showVirtualList, setShowVirtualList] = useState(false);
   const { setTheme } = useTheme()
 
   useEffect(() => {
@@ -51,7 +50,6 @@ function App() {
       .then(result => {
         if (result.success) {
           setData(result.data);
-          setShowVirtualList(true);
         }
         setLoading(false);
       })
@@ -62,10 +60,7 @@ function App() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <p>Client script loaded.</p>
-      <p>/api/hello: {msg}</p>
-      
+    <div style={{ padding: '20px' }}>      
       <div style={{ marginBottom: '20px' }}>
         <Button onClick={() => setTheme("light")}>Light</Button>
         <Button onClick={() => setTheme("dark")}>Dark</Button>
@@ -74,7 +69,6 @@ function App() {
         </Button>
       </div>
 
-      {showVirtualList && (
         <div>
           <h2>虚拟列表 Demo</h2>
           <p>总共 {data.length} 条数据，只渲染可见区域的项目</p>
@@ -83,14 +77,14 @@ function App() {
             <List
               height={400}
               width={600}
-              itemCount={data.length}
+              data={data}
               itemSize={35}
             >
               {Row}
             </List>
           </div>
         </div>
-      )}
+      
     </div>
   );
 }
