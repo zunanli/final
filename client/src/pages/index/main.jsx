@@ -37,6 +37,7 @@ function App() {
   const { setTheme } = useTheme()
 
   useEffect(() => {
+    console.log('load');
     fetch('/api/hello')
       .then((r) => r.json())
       .then((d) => setMsg(d.message))

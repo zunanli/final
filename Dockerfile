@@ -14,6 +14,9 @@
   COPY client ./client
   COPY server ./server
   COPY package.json ./
+  # 关键修复：拷贝 PostCSS 和 Tailwind 配置文件
+  COPY postcss.config.js ./
+  COPY tailwind.config.js ./
   RUN pnpm run build
   
   

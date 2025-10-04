@@ -13,6 +13,7 @@ function Head({ title }) {
             try {
               const theme = localStorage.getItem('theme') || 
                 (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                console.log(theme,'before load');
               if(theme === 'dark') {
                 document.documentElement.classList.add('dark');
               }
