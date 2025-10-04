@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import '../../../style.css';
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/button"
 import { ThemeProvider } from "@/components/theme-provider"
 import { useTheme } from "next-themes"
 
@@ -9,6 +9,8 @@ import { useTheme } from "next-themes"
 function List({ height, width, itemCount, itemSize, children: Row }) {
   const [scrollTop, setScrollTop] = useState(0);
   const containerRef = useRef(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   // 计算可见区域
   const visibleCount = Math.ceil(height / itemSize);
@@ -47,7 +49,7 @@ function List({ height, width, itemCount, itemSize, children: Row }) {
         width,
         overflow: 'auto',
         position: 'relative',
-        border: '1px solid #ddd',
+        border: isDark ? '1px solid #444' : '1px solid #ddd',
         borderRadius: '4px',
       }}
       onScroll={handleScroll}
@@ -66,18 +68,24 @@ function List({ height, width, itemCount, itemSize, children: Row }) {
 
 // 列表项组件
 function Row({ index }) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
   return (
     <div
       style={{
         padding: '8px 16px',
-        borderBottom: '1px solid #eee',
+        borderBottom: isDark ? '1px solid #333' : '1px solid #eee',
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#fff',
+        backgroundColor: index % 2 === 0 
+          ? (isDark ? '#2a2a2a' : '#f9f9f9')
+          : (isDark ? '#1a1a1a' : '#fff'),
+        color: isDark ? '#fff' : '#000',
       }}
     >
       <span style={{ fontWeight: 'bold', marginRight: '12px' }}>#{index + 1}</span>
-      <span>Item {index + 1}</span>
+      <span>Item??? {index + 1}</span>
     </div>
   );
 }

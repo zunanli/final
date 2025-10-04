@@ -7,7 +7,7 @@
     "build:client": "vite build -c client/vite.config.mjs",
     "build:ssr": "vite build -c server/vite.ssr.config.mjs",
     "build": "pnpm run build:client && pnpm run build:ssr",
-    "dev": "kill-port 3000 || true && concurrently -k -n client,ssr,server -c cyan,magenta,green \"vite build -c client/vite.config.mjs -w\" \"vite build -c server/vite.ssr.config.mjs -w\" \"nodemon --watch server --ext js,jsx,json server/index.js\""
+    "dev": "concurrently -k -n client,ssr,server -c cyan,magenta,green \"vite build -c client/vite.config.mjs -w\" \"vite build -c server/vite.ssr.config.mjs -w\" \"nodemon --watch server --ext js,jsx,json server/index.js\""
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
