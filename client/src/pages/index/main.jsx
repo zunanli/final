@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { useTheme } from "next-themes"
 import List from "@/components/vList"
 import EditableRow from "@/components/EditableRow"
-import useListStore from '../../store/listStore';
+import useListStore from '../../store/listStore.ts';
 
 // 使用新的可编辑Row组件
 

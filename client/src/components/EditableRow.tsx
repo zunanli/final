@@ -1,21 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-// @ts-ignore 无法找到模块"@/store/listStore"的声明文件，先忽略类型检查
-import { useItem } from '@/store/listStore';
-// @ts-ignore
-import useListStore from '@/store/listStore';
+import { useItem } from '@/store/listStore.ts';
+import useListStore from '@/store/listStore.ts';
 
 interface EditableRowProps {
   index: number;
 }
 
 const EditableRow: React.FC<EditableRowProps> = React.memo(({ index }) => {
+  // 使用selector只订阅单个item的变化
   const item = useItem(index);
-  // @ts-ignore
   const updateItem = useListStore((state) => state.updateItem);
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(item?.text || '');
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // 添加日志观察重渲染 - 现在应该只有对应item变化时才会重渲染
+  console.log(`✅ EditableRow ${index} 重新渲染了！`, { item: item?.text });
 
   // 当item变化时更新value
   useEffect(() => {
