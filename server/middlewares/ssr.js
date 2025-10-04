@@ -72,7 +72,6 @@ module.exports = (app) => {
             '<script type="module" src="@clientsrc/pages/index/main.jsx"></script>',
             scriptTag
           );
-          console.log(manifest)
 
           // 如果有 CSS 文件，也一并注入
           if (clientEntry.css) {

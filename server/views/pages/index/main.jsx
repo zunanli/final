@@ -1,4 +1,5 @@
 const React = require('react');
+import { Button } from '@client/src/components/ui/button';
 
 function Head({ title }) {
   return (
@@ -12,9 +13,11 @@ function Head({ title }) {
 
 function App({ title }) {
   return (
-    <div id="root">
+    <div id="container">
       <h1>{title}</h1>
       <p>This page is rendered on server.</p>
+      <Button>Click Me (From Server)</Button>
+      <div id="root" />
     </div>
   );
 }

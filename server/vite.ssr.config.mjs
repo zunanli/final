@@ -5,6 +5,16 @@ import path from 'path';
 // Build SSR views: transpile JSX in server/views to CJS under build/server/views
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@client': path.resolve(process.cwd(), 'client'),
+      "@": path.resolve(process.cwd(), "./client/src"),
+    },
+  },
+  ssr: {
+    // 防止 antd-mobile 等组件库在 ssr 构建时被 external
+    noExternal: [/@client/],
+  },
   build: {
     ssr: true,
     outDir: path.resolve(process.cwd(), 'build/server/views'),
