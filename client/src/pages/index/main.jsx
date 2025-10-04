@@ -5,30 +5,9 @@ import { Button } from "@/components/button"
 import { ThemeProvider } from "@/components/theme-provider"
 import { useTheme } from "next-themes"
 import List from "@/components/vList"
+import EditableRow from "@/components/EditableRow"
 
-// 列表项组件
-function Row({ index }) {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-  
-  return (
-    <div
-      style={{
-        padding: '8px 16px',
-        borderBottom: isDark ? '1px solid #333' : '1px solid #eee',
-        display: 'flex',
-        alignItems: 'center',
-        backgroundColor: index % 2 === 0 
-          ? (isDark ? '#2a2a2a' : '#f9f9f9')
-          : (isDark ? '#1a1a1a' : '#fff'),
-        color: isDark ? '#fff' : '#000',
-      }}
-    >
-      <span style={{ fontWeight: 'bold', marginRight: '12px' }}>#{index + 1}</span>
-      <span>Item??? {index + 1}</span>
-    </div>
-  );
-}
+// 使用新的可编辑Row组件
 
 function App() {
   const [msg, setMsg] = useState('');
@@ -50,7 +29,12 @@ function App() {
       .then(res => res.json())
       .then(result => {
         if (result.success) {
-          setData(result.data);
+          // 转换数据格式为可编辑的结构
+          const editableData = result.data.map((item, index) => ({
+            id: index + 1,
+            text: `Item ${index + 1} - ${item.name || '可编辑文本'}`
+          }));
+          setData(editableData);
         }
         setLoading(false);
       })
@@ -58,6 +42,15 @@ function App() {
         console.error('Failed to fetch data:', err);
         setLoading(false);
       });
+  };
+
+  // 处理item编辑的回调函数
+  const handleItemChange = (index, newValue) => {
+    setData(prevData => {
+      const newData = [...prevData];
+      newData[index] = { ...newData[index], text: newValue };
+      return newData;
+    });
   };
 
   return (
@@ -80,8 +73,9 @@ function App() {
               width={600}
               data={data}
               itemSize={35}
+              onItemChange={handleItemChange}
             >
-              {Row}
+              {EditableRow}
             </List>
           </div>
         </div>

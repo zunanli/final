@@ -6,10 +6,15 @@ type ListProps<T> = {
   width: number;
   itemSize: number;
   data: T[];
-  children: (props: { index: number; item: T }) => React.ReactNode;
+  children: (props: { 
+    index: number; 
+    item: T;
+    onItemChange?: (index: number, newValue: string) => void;
+  }) => React.ReactNode;
+  onItemChange?: (index: number, newValue: string) => void;
 }
 
-export default function List<T>({ height, width, data, itemSize, children: Row }: ListProps<T>) {
+export default function List<T>({ height, width, data, itemSize, children: Row, onItemChange }: ListProps<T>) {
   const [scrollTop, setScrollTop] = useState(0);
   const containerRef = useRef(null);
   const { theme } = useTheme();
@@ -58,7 +63,7 @@ export default function List<T>({ height, width, data, itemSize, children: Row }
           height: itemSize,
         }}
       >
-        <Row index={itemIndex} item={item} />
+        <Row index={itemIndex} item={item} onItemChange={onItemChange} />
       </div>
     );
   })}
