@@ -7,6 +7,19 @@ function Head({ title }) {
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width,initial-scale=1" />
       <title>{title}</title>
+      <script dangerouslySetInnerHTML={{
+        __html: `
+          (function(){
+            try {
+              const theme = localStorage.getItem('theme') || 
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+              if(theme === 'dark') {
+                document.documentElement.classList.add('dark');
+              }
+            } catch(e) {}
+          })();
+        `
+      }} />
     </head>
   );
 }
@@ -16,7 +29,7 @@ function App({ title }) {
     <div id="container">
       <h1>{title}</h1>
       <p>This page is rendered on server.</p>
-      <Button>Click Me (From Server)</Button>
+      <Button variant="destructive" size="sm">Click Me (From Server)</Button>
       <div id="root" />
     </div>
   );
