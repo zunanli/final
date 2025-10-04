@@ -4,11 +4,20 @@ const React = require('react');
 const { renderToString } = require('react-dom/server');
 const xss = require('xss');
 
-// 读取 manifest.json
+// manifest.json 路径
 const manifestPath = path.join(process.cwd(), 'build/client/.vite', 'manifest.json');
-let manifest = {};
-if (fs.existsSync(manifestPath)) {
-  manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
+
+// 动态读取 manifest.json 的函数
+function getManifest() {
+  if (fs.existsSync(manifestPath)) {
+    try {
+      return JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
+    } catch (e) {
+      console.warn('Failed to read manifest.json:', e.message);
+      return {};
+    }
+  }
+  return {};
 }
 const LogHelper = {
   fatalError: (e) => {
@@ -61,6 +70,9 @@ module.exports = (app) => {
           React.createElement(Component, { data: safeMergedContext, params: safeParams }, null),
         );
 
+        // 动态读取最新的 manifest 文件
+        const manifest = getManifest();
+        
         // 从 manifest 中获取客户端入口文件的正确路径
         const entryName = 'src/pages/index/main.jsx';
         const clientEntry = manifest[entryName];

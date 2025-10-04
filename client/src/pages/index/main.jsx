@@ -127,7 +127,6 @@ function App() {
       <p>/api/hello: {msg}</p>
       
       <div style={{ marginBottom: '20px' }}>
-        <Button>DDDDDDEPLOY</Button>
         <Button onClick={() => setTheme("light")}>Light</Button>
         <Button onClick={() => setTheme("dark")}>Dark</Button>
         <Button onClick={loadData} disabled={loading}>
