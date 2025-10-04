@@ -6,21 +6,19 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { useTheme } from "next-themes"
 import List from "@/components/vList"
 import EditableRow from "@/components/EditableRow"
-import useListStore from '../../store/listStore';
+import { useItemCount, useLoading, useLoadData } from '../../store/listStore';
 
 // 使用新的可编辑Row组件
 
 function App() {
-  const { data, loading, loadData, updateItem } = useListStore();
+  const itemCount = useItemCount();
+  const loading = useLoading();
+  const loadData = useLoadData();
   const { setTheme } = useTheme();
 
   useEffect(() => {
     loadData();
   }, [loadData]);
-
-  const handleItemChange = (index, newValue) => {
-    updateItem(index, newValue);
-  };
 
   return (
     <div style={{ padding: '20px' }}>      
@@ -34,17 +32,18 @@ function App() {
 
         <div>
           <h2>虚拟列表 Demo</h2>
-          <p>总共 {data.length} 条数据，只渲染可见区域的项目</p>
+          <p>总共 {itemCount} 条数据，只渲染可见区域的项目</p>
           
           <div style={{ marginTop: '20px' }}>
             <List
               height={400}
               width={600}
-              data={data}
+              itemCount={itemCount}
               itemSize={35}
-              onItemChange={handleItemChange}
             >
-              {EditableRow}
+              {Array.from({ length: itemCount }, (_, index) => (
+                <EditableRow key={index} index={index} />
+              ))}
             </List>
           </div>
         </div>

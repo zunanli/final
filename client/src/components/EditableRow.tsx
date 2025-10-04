@@ -1,16 +1,25 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+// @ts-ignore 无法找到模块“@/store/listStore”的声明文件，先忽略类型检查
+import { useItem, useUpdateItem } from '@/store/listStore';
 
 interface EditableRowProps {
   index: number;
-  item: { id: number; text: string };
-  onItemChange?: (index: number, newValue: string) => void;
 }
 
-export default function EditableRow({ index, item, onItemChange }: EditableRowProps) {
+const EditableRow: React.FC<EditableRowProps> = React.memo(({ index }) => {
+  const item = useItem(index);
+  const updateItem = useUpdateItem();
   const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState(item.text);
+  const [value, setValue] = useState(item?.text || '');
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // 当item变化时更新value
+  useEffect(() => {
+    if (item?.text) {
+      setValue(item.text);
+    }
+  }, [item?.text]);
 
   // 当进入编辑模式时，自动聚焦到输入框
   useEffect(() => {
@@ -27,8 +36,8 @@ export default function EditableRow({ index, item, onItemChange }: EditableRowPr
   const handleBlur = () => {
     setIsEditing(false);
     // 当失去焦点时，如果值发生变化，调用回调函数
-    if (value !== item.text && onItemChange) {
-      onItemChange(index, value);
+    if (item && value !== item.text) {
+      updateItem(index, value);
     }
   };
 
@@ -42,10 +51,15 @@ export default function EditableRow({ index, item, onItemChange }: EditableRowPr
       inputRef.current?.blur();
     } else if (e.key === 'Escape') {
       // 按 Esc 键时取消编辑，恢复原值
-      setValue(item.text);
+      setValue(item?.text || '');
       inputRef.current?.blur();
     }
   };
+
+  // 如果item不存在，返回空
+  if (!item) {
+    return null;
+  }
 
   return (
     <div className={cn(
@@ -74,4 +88,8 @@ export default function EditableRow({ index, item, onItemChange }: EditableRowPr
       />
     </div>
   );
-}
+});
+
+EditableRow.displayName = 'EditableRow';
+
+export default EditableRow;
