@@ -21,7 +21,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^2.4.0",
-    "xss": "^1.0.15"
+    "xss": "^1.0.15",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@types/node": "^24.6.0",

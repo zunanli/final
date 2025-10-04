@@ -6,60 +6,29 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { useTheme } from "next-themes"
 import List from "@/components/vList"
 import EditableRow from "@/components/EditableRow"
+import useListStore from '../../store/listStore';
 
 // 使用新的可编辑Row组件
 
 function App() {
-  const [msg, setMsg] = useState('');
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const { setTheme } = useTheme()
+  const { data, loading, loadData, updateItem } = useListStore();
+  const { setTheme } = useTheme();
 
   useEffect(() => {
-    console.log('load');
-    fetch('/api/hello')
-      .then((r) => r.json())
-      .then((d) => setMsg(d.message))
-      .catch(() => setMsg('api error'));
-  }, []);
+    loadData();
+  }, [loadData]);
 
-  const loadData = () => {
-    setLoading(true);
-    fetch('/api/data')
-      .then(res => res.json())
-      .then(result => {
-        if (result.success) {
-          // 转换数据格式为可编辑的结构
-          const editableData = result.data.map((item, index) => ({
-            id: index + 1,
-            text: `Item ${index + 1} - ${item.name || '可编辑文本'}`
-          }));
-          setData(editableData);
-        }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to fetch data:', err);
-        setLoading(false);
-      });
-  };
-
-  // 处理item编辑的回调函数
   const handleItemChange = (index, newValue) => {
-    setData(prevData => {
-      const newData = [...prevData];
-      newData[index] = { ...newData[index], text: newValue };
-      return newData;
-    });
+    updateItem(index, newValue);
   };
 
   return (
     <div style={{ padding: '20px' }}>      
-      <div style={{ marginBottom: '20px' }}>
+      <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
         <Button onClick={() => setTheme("light")}>Light</Button>
         <Button onClick={() => setTheme("dark")}>Dark</Button>
         <Button onClick={loadData} disabled={loading}>
-          {loading ? 'Loading...' : '加载虚拟列表 (5000条数据)'}
+          {loading ? 'Loading...' : '重新加载数据'}
         </Button>
       </div>
 
