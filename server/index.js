@@ -18,6 +18,25 @@ router.get('/api/hello', async (ctx) => {
   ctx.body = { message: 'hello api1111111' };
 });
 
+// data api
+router.get('/api/data', async (ctx) => {
+  // 生成5000条测试数据
+  const data = [];
+  for (let i = 0; i < 5000; i++) {
+    data.push({
+      id: i + 1,
+      name: `Item ${i + 1}`,
+      value: Math.floor(Math.random() * 1000),
+      description: `This is item number ${i + 1}`
+    });
+  }
+  ctx.body = {
+    success: true,
+    data: data,
+    total: data.length
+  };
+});
+
 // SSR route as requested
 router.get(['/h5(.*)'], async (ctx) => {
   const data = { title: 'Hello SSR', now: Date.now() };
