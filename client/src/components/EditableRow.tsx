@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-// @ts-ignore 无法找到模块“@/store/listStore”的声明文件，先忽略类型检查
-import { useItem, useUpdateItem } from '@/store/listStore';
+// @ts-ignore 无法找到模块"@/store/listStore"的声明文件，先忽略类型检查
+import { useItem } from '@/store/listStore';
+// @ts-ignore
+import useListStore from '@/store/listStore';
 
 interface EditableRowProps {
   index: number;
@@ -9,7 +11,8 @@ interface EditableRowProps {
 
 const EditableRow: React.FC<EditableRowProps> = React.memo(({ index }) => {
   const item = useItem(index);
-  const updateItem = useUpdateItem();
+  // @ts-ignore
+  const updateItem = useListStore((state) => state.updateItem);
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(item?.text || '');
   const inputRef = useRef<HTMLInputElement>(null);

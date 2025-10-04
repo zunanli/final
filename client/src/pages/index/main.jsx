@@ -6,14 +6,12 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { useTheme } from "next-themes"
 import List from "@/components/vList"
 import EditableRow from "@/components/EditableRow"
-import { useItemCount, useLoading, useLoadData } from '../../store/listStore';
+import useListStore from '../../store/listStore';
 
 // 使用新的可编辑Row组件
 
 function App() {
-  const itemCount = useItemCount();
-  const loading = useLoading();
-  const loadData = useLoadData();
+  const { itemCount, loading, loadData } = useListStore();
   const { setTheme } = useTheme();
 
   useEffect(() => {

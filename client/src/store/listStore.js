@@ -38,13 +38,7 @@ const useListStore = create((set, get) => ({
   getItemCount: () => get().itemCount
 }));
 
-// 单个item的selector hook
+// 单个item的selector hook - 这是唯一需要的selector，确保只有对应item变化时才重渲染
 export const useItem = (index) => useListStore((state) => state.items[index]);
-
-// 其他selector hooks
-export const useItemCount = () => useListStore((state) => state.itemCount);
-export const useLoading = () => useListStore((state) => state.loading);
-export const useUpdateItem = () => useListStore((state) => state.updateItem);
-export const useLoadData = () => useListStore((state) => state.loadData);
 
 export default useListStore;
