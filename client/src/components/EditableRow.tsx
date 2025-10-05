@@ -16,7 +16,7 @@ const EditableRow: React.FC<EditableRowProps> = React.memo(({ index }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   // 添加日志观察重渲染 - 现在应该只有对应item变化时才会重渲染
-  console.log(`✅ EditableRow ${index} 重新渲染了！`, { item: item?.text });
+  // console.log(`✅ EditableRow ${index} 重新渲染了！`, { item: item?.text });
 
   // 当item变化时更新value
   useEffect(() => {

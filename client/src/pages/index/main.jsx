@@ -7,6 +7,8 @@ import { useTheme } from "next-themes"
 import List from "@/components/vList"
 import EditableRow from "@/components/EditableRow"
 import useListStore from '../../store/listStore.ts';
+import '../../lib/performance.js'; // 🚀 一行代码启用性能监控
+import { ProfilerWrapper } from '../../lib/profiler'; // 🔍 React Profiler 监控
 
 // 使用新的可编辑Row组件
 
@@ -60,7 +62,9 @@ if (container) {
           enableSystem
           disableTransitionOnChange
     >
-      <App />
+      <ProfilerWrapper id="myqpp">
+        <App />
+      </ProfilerWrapper>
     </ThemeProvider>
   );
 }

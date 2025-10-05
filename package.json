@@ -7,7 +7,7 @@
     "build:client": "vite build -c client/vite.config.mjs",
     "build:ssr": "vite build -c server/vite.ssr.config.mjs",
     "build": "pnpm run build:client && pnpm run build:ssr",
-    "dev": "concurrently -k -n client,ssr,server -c cyan,magenta,green \"vite build -c client/vite.config.mjs -w\" \"vite build -c server/vite.ssr.config.mjs -w\" \"nodemon --watch server --ext js,jsx,json server/index.js\"",
+    "dev": "concurrently -k -n client,ssr,server -c cyan,magenta,green \"vite build -c client/vite.config.mjs -w --mode development\" \"vite build -c server/vite.ssr.config.mjs -w\" \"nodemon --watch server --ext js,jsx,json server/index.js\"",
     "test": "jest",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
@@ -26,6 +26,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^2.4.0",
+    "web-vitals": "^5.1.0",
     "xss": "^1.0.15",
     "zustand": "^5.0.8"
   },
