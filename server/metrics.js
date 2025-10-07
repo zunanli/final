@@ -1,13 +1,16 @@
 const client = require('prom-client');
 
-// 创建默认指标注册表
+// 清除默认注册表，避免自动收集系统指标
+client.register.clear();
+
+// 创建自定义指标注册表（不包含默认系统指标）
 const register = new client.Registry();
 
-// 添加默认系统指标（CPU、内存等）
-client.collectDefaultMetrics({
-  register,
-  prefix: 'koa_ssr_',
-});
+// 如果需要系统指标，可以选择性添加特定指标
+// client.collectDefaultMetrics({
+//   register,
+//   prefix: 'koa_ssr_',
+// });
 
 // HTTP 请求持续时间直方图
 const httpRequestDuration = new client.Histogram({
@@ -22,14 +25,6 @@ const httpRequestsTotal = new client.Counter({
   name: 'http_requests_total',
   help: 'Total number of HTTP requests',
   labelNames: ['method', 'route', 'status_code'],
-});
-
-// SSR 渲染时间直方图
-const ssrRenderDuration = new client.Histogram({
-  name: 'ssr_render_duration_seconds',
-  help: 'Duration of SSR rendering in seconds',
-  labelNames: ['page'],
-  buckets: [0.01, 0.05, 0.1, 0.2, 0.5, 1, 2, 5],
 });
 
 // Web Vitals 指标
@@ -57,7 +52,6 @@ const webVitalsCLS = new client.Histogram({
 // 注册所有自定义指标
 register.registerMetric(httpRequestDuration);
 register.registerMetric(httpRequestsTotal);
-register.registerMetric(ssrRenderDuration);
 register.registerMetric(webVitalsLCP);
 register.registerMetric(webVitalsFID);
 register.registerMetric(webVitalsCLS);
@@ -66,7 +60,6 @@ module.exports = {
   register,
   httpRequestDuration,
   httpRequestsTotal,
-  ssrRenderDuration,
   webVitalsLCP,
   webVitalsFID,
   webVitalsCLS,
