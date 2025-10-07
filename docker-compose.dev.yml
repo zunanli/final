@@ -1,0 +1,45 @@
+services:
+  app:
+    build: .
+    container_name: my_ssr_app_dev
+    restart: always
+    networks: [appnet]
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: nginx_proxy_dev
+    restart: always
+    depends_on: [app]
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    networks: [appnet]
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_dev
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks: [appnet]
+    depends_on: [app]
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_dev
+    restart: always
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks: [appnet]
+    depends_on: [prometheus]
+
+networks:
+  appnet:
+    driver: bridge
