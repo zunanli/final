@@ -9,7 +9,17 @@ scrape_configs:
     metrics_path: '/metrics'
     scrape_interval: 5s
     scrape_timeout: 5s
+    # 只保留我们的自定义指标
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: '^(http_request_duration_seconds|http_requests_total|web_vitals_lcp_seconds|web_vitals_fid_seconds|web_vitals_cls_score).*'
+        action: keep
 
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
+    # 只保留基本的 Prometheus 指标
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: '^(prometheus_config_last_reload_successful|prometheus_build_info|up)$'
+        action: keep

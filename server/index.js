@@ -1,6 +1,7 @@
 const Koa = require('koa');
 const Router = require('koa-router');
 const serve = require('koa-static');
+const bodyParser = require('koa-bodyparser');
 const path = require('path');
 
 // 导入监控相关模块
@@ -10,7 +11,9 @@ const { httpMonitoring } = require('./middlewares/monitoring');
 const app = new Koa();
 const router = new Router();
 
-// 应用监控中间件（在其他中间件之前）
+// 添加 body parser 中间件
+app.use(bodyParser());
+// 添加监控中间件
 app.use(httpMonitoring());
 
 // mount ssr middleware
