@@ -7,6 +7,7 @@ const path = require('path');
 // 导入监控相关模块
 const { register, webVitalsLCP, webVitalsFID, webVitalsCLS } = require('./metrics');
 const { httpMonitoring } = require('./middlewares/monitoring');
+const { errorMonitoring } = require('./middlewares/nodeMonitoring');
 
 const app = new Koa();
 const router = new Router();
@@ -15,6 +16,8 @@ const router = new Router();
 app.use(bodyParser());
 // 添加监控中间件
 app.use(httpMonitoring());
+// 添加错误监控中间件
+app.use(errorMonitoring());
 
 // mount ssr middleware
 require('./middlewares/ssr')(app);

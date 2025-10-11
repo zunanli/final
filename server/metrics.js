@@ -49,12 +49,67 @@ const webVitalsCLS = new client.Histogram({
   buckets: [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.5, 1],
 });
 
+// Node.js 系统指标
+const nodejsMemoryHeapUsed = new client.Gauge({
+  name: 'nodejs_memory_heap_used_bytes',
+  help: 'Process heap memory used in bytes',
+});
+
+const nodejsCpuUsage = new client.Gauge({
+  name: 'nodejs_cpu_usage_percent',
+  help: 'Process CPU usage percentage',
+});
+
+// 错误监控指标
+const nodejsUnhandledRejections = new client.Counter({
+  name: 'nodejs_unhandled_rejections_total',
+  help: 'Total number of unhandled promise rejections',
+  labelNames: ['reason'],
+});
+
+const nodejsUncaughtExceptions = new client.Counter({
+  name: 'nodejs_uncaught_exceptions_total',
+  help: 'Total number of uncaught exceptions',
+  labelNames: ['error_type'],
+});
+
+const nodejsErrors = new client.Counter({
+  name: 'nodejs_errors_total',
+  help: 'Total number of application errors',
+  labelNames: ['error_type', 'error_code'],
+});
+
+const nodejsErrorRate = new client.Gauge({
+  name: 'nodejs_error_rate',
+  help: 'Error rate (errors/total requests)',
+});
+
+const httpErrors = new client.Counter({
+  name: 'http_errors_total',
+  help: 'Total number of HTTP errors',
+  labelNames: ['method', 'route', 'status_code', 'error_type'],
+});
+
+const nodejsExternalApiErrors = new client.Counter({
+  name: 'nodejs_external_api_errors_total',
+  help: 'Total number of external API errors',
+  labelNames: ['api_name', 'error_type', 'status_code'],
+});
+
 // 注册所有自定义指标
 register.registerMetric(httpRequestDuration);
 register.registerMetric(httpRequestsTotal);
 register.registerMetric(webVitalsLCP);
 register.registerMetric(webVitalsFID);
 register.registerMetric(webVitalsCLS);
+register.registerMetric(nodejsMemoryHeapUsed);
+register.registerMetric(nodejsCpuUsage);
+register.registerMetric(nodejsUnhandledRejections);
+register.registerMetric(nodejsUncaughtExceptions);
+register.registerMetric(nodejsErrors);
+register.registerMetric(nodejsErrorRate);
+register.registerMetric(httpErrors);
+register.registerMetric(nodejsExternalApiErrors);
 
 module.exports = {
   register,
@@ -63,4 +118,12 @@ module.exports = {
   webVitalsLCP,
   webVitalsFID,
   webVitalsCLS,
+  nodejsMemoryHeapUsed,
+  nodejsCpuUsage,
+  nodejsUnhandledRejections,
+  nodejsUncaughtExceptions,
+  nodejsErrors,
+  nodejsErrorRate,
+  httpErrors,
+  nodejsExternalApiErrors,
 };

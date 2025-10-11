@@ -12,8 +12,12 @@ scrape_configs:
     # 只保留我们的自定义指标
     metric_relabel_configs:
       - source_labels: [__name__]
-        regex: '^(http_request_duration_seconds|http_requests_total|web_vitals_lcp_seconds|web_vitals_fid_seconds|web_vitals_cls_score).*'
+        regex: '^(http_request_duration_seconds|http_requests_total|web_vitals_lcp_seconds|web_vitals_fid_seconds|web_vitals_cls_score|nodejs_memory_heap_used_bytes|nodejs_cpu_usage_percent|nodejs_unhandled_rejections_total|nodejs_uncaught_exceptions_total|nodejs_errors_total|nodejs_error_rate|http_errors_total|nodejs_external_api_errors_total).*'
         action: keep
+      # 过滤掉所有 scrape_ 开头的指标
+      - source_labels: [__name__]
+        regex: '^scrape_.*'
+        action: drop
 
   - job_name: 'prometheus'
     static_configs:
