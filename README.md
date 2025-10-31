@@ -22,7 +22,7 @@
 │   ├── src/                      # 源代码
 │   └── vite.config.mjs           # 客户端构建的 Vite 配置
 ├── server/                       # 后端 Koa 应用
-│   ├── index.js                  # Koa 服务器入口文件
+│   ├── app.js                  # Koa 服务器入口文件
 │   ├── middlewares/ssr.js        # SSR 中间件
 │   ├── views/                    # 用于 SSR 的 React 组件
 │   └── vite.ssr.config.mjs       # SSR 构建的 Vite 配置
