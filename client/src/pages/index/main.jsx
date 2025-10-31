@@ -15,10 +15,29 @@ import { ProfilerWrapper } from '../../lib/profiler'; // 🔍 React Profiler 监
 function App() {
   const { itemCount, loading, loadData } = useListStore();
   const { setTheme } = useTheme();
+  const [users, setUsers] = useState([]);
+  const [usersLoading, setUsersLoading] = useState(false);
 
   useEffect(() => {
     loadData();
+    loadUsers();
   }, [loadData]);
+
+  // 加载 MySQL 用户数据
+  const loadUsers = async () => {
+    setUsersLoading(true);
+    try {
+      const response = await fetch('/api/users');
+      const result = await response.json();
+      if (result.success) {
+        setUsers(result.data);
+      }
+    } catch (error) {
+      console.error('Failed to load users:', error);
+    } finally {
+      setUsersLoading(false);
+    }
+  };
 
   return (
     <div style={{ padding: '20px' }}>      
@@ -28,9 +47,33 @@ function App() {
         <Button onClick={loadData} disabled={loading}>
           {loading ? 'Loading...' : '重新加载数据'}
         </Button>
+        <Button onClick={loadUsers} disabled={usersLoading}>
+          {usersLoading ? 'Loading...' : '重新加载用户'}
+        </Button>
       </div>
 
         <div>
+          <h2>MySQL 用户数据</h2>
+          <div style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
+            {usersLoading ? (
+              <p>加载中...</p>
+            ) : (
+              <div>
+                <p>共 {users.length} 个用户</p>
+                <div style={{ display: 'grid', gap: '8px' }}>
+                  {users.map(user => (
+                    <div key={user.id} style={{ padding: '8px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+                      <strong>{user.name}</strong> - {user.email}
+                      <small style={{ marginLeft: '10px', color: '#666' }}>
+                        {new Date(user.created_at).toLocaleString()}
+                      </small>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
           <h2>虚拟列表 Demo</h2>
           <p>总共 {itemCount} 条数据，只渲染可见区域的项目</p>
           
