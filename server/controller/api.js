@@ -87,3 +87,42 @@ router.get('/api/users', async (ctx) => {
 });
 
 module.exports = router;
+/**
+ * 搜索接口：GET /api/search?q=keyword&limit=5
+ * - 使用内存数据进行简单匹配，避免引入 DB
+ * - 默认 limit=5，最大 50
+ * - 返回 { items: ResultItem[], tookMs }
+ */
+router.get('/api/search', async (ctx) => {
+  const start = Date.now();
+  const q = (ctx.query.q || '').toString().trim();
+  const limit = Math.min(Math.max(parseInt(ctx.query.limit, 10) || 5, 1), 50);
+
+  // 最小查询长度限制：默认 3（与组件默认一致）
+  if (q.length < 1) {
+    ctx.body = { items: [], tookMs: Date.now() - start };
+    return;
+  }
+
+  // 简单的内存数据集（可根据需要扩展）
+  const DATA = [
+    'Apple', 'Apricot', 'Avocado', 'Banana', 'Blueberry', 'Blackberry',
+    'Cherry', 'Coconut', 'Cranberry', 'Date', 'Dragonfruit', 'Durian',
+    'Fig', 'Grape', 'Grapefruit', 'Guava', 'Kiwi', 'Lemon', 'Lime', 'Lychee',
+    'Mango', 'Melon', 'Nectarine', 'Orange', 'Papaya', 'Peach', 'Pear',
+    'Pineapple', 'Plum', 'Pomegranate', 'Raspberry', 'Strawberry', 'Tangerine',
+    'Watermelon'
+  ];
+
+  // 前缀优先，再 fallback 到包含匹配，均大小写不敏感
+  const lcq = q.toLowerCase();
+  const prefixMatches = DATA.filter((s) => s.toLowerCase().startsWith(lcq));
+  const includeMatches = DATA.filter((s) => s.toLowerCase().includes(lcq));
+
+  // 合并并去重，按前缀命中优先排序
+  const merged = [...prefixMatches, ...includeMatches.filter((x) => !prefixMatches.includes(x))]
+    .slice(0, limit)
+    .map((label, idx) => ({ id: `${label}-${idx}`, label }));
+
+  ctx.body = { items: merged, tookMs: Date.now() - start };
+});

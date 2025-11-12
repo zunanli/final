@@ -9,6 +9,7 @@ import EditableRow from "@/components/EditableRow"
 import useListStore from '../../store/listStore.ts';
 import '../../lib/performance.js'; // 🚀 一行代码启用性能监控
 import { ProfilerWrapper } from '../../lib/profiler'; // 🔍 React Profiler 监控
+import AutocompleteInput from '@/components/autocomplete/AutocompleteInput';
 
 // 使用新的可编辑Row组件
 
@@ -50,6 +51,19 @@ function App() {
         <Button onClick={loadUsers} disabled={usersLoading}>
           {usersLoading ? 'Loading...' : '重新加载用户'}
         </Button>
+      </div>
+
+      {/* Autocomplete demo area */}
+      <div id="autocomplete-area" style={{ maxWidth: 480 }}>
+        <AutocompleteInput
+          apiUrl="/api/search"
+          maxResults={8}
+          minQueryLength={1}
+          debounceMs={250}
+          timeoutMs={5000}
+          resultsSource="network-and-cache"
+          placeholder="Search fruits…"
+        />
       </div>
 
         <div>
@@ -111,3 +125,5 @@ if (container) {
     </ThemeProvider>
   );
 }
+
+// 已移除独立挂载，避免出现两个输入框，仅保留 App 内集成

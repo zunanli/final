@@ -1,4 +1,4 @@
-const React = require('react');
+
 import { Button } from '@client/src/components/button';
 
 function Head({ title }) {
